@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Produto - Ferreira de Frontal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#A020F0]">
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex-shrink-0 flex items-center">
+                    <h1 class="text-2xl font-bold text-[#A020F0]">Ferreira de Frontal</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="cart.html" class="text-[#A020F0] hover:text-purple-700">Carrinho</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <section class="bg-white rounded-lg shadow-md p-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <img id="product-image" alt="Product Image" class="w-full h-auto rounded-lg">
+                </div>
+                <div>
+                    <h2 id="product-name" class="text-3xl font-bold text-[#A020F0] mb-4"></h2>
+                    <p id="product-description" class="text-gray-600 mb-4"></p>
+                    <p id="product-price" class="text-lg font-semibold text-[#A020F0]">Preço: </p>
+                    <div style="margin-top: 100px; text-align: left;">
+                        <a href="#" 
+                           class="bg-[#29104A] text-white px-6 py-3 rounded-md text-center font-semibold transition-all transform hover:bg-[#3f2265] hover:scale-105" 
+                           onclick="addToCart(event)">
+                           Adicionar ao Carrinho
+                        </a>
+                    </div>
+                    <div id="success-message" class="hidden mt-4 text-green-500 font-semibold">
+                        Produto adicionado ao carrinho!
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function getProductFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('product');
+        }
+
+        function setProductDetails() {
+            const product = getProductFromURL();
+            const productDetails = {
+                "cadeira": {
+                    name: "Cadeira",
+                    price: "50R$",
+                    description: "Elegant and comfortable furniture for your living space.",
+                    image: "/FrontDaLoja/img/download.jpeg"
+                },
+                "cama": {
+                    name: "Cama",
+                    price: "1100R$",
+                    description: "Peaceful and stylish bedroom furniture.",
+                    image: "/FrontDaLoja/img/images.jpeg"
+                },
+                "sala": {
+                    name: "Sala de Estar",
+                    price: "150R$",
+                    description: "Beautiful dining sets for memorable meals.",
+                    image: "/FrontDaLoja/img/mesa-de-jantar-laca-branca-brilhante-quadrada-sala-moderna.jpg"
+                }
+            };
+
+            const productInfo = productDetails[product];
+
+            if (productInfo) {
+                document.getElementById("product-name").innerText = productInfo.name;
+                document.getElementById("product-price").innerText = "Preço: " + productInfo.price;
+                document.getElementById("product-description").innerText = productInfo.description;
+                document.getElementById("product-image").src = productInfo.image;
+            }
+        }
+
+        function addToCart(event) {
+            event.preventDefault();  // Impede o redirecionamento imediato
+
+            const product = getProductFromURL();
+            const productDetails = {
+                "cadeira": {
+                    name: "Cadeira",
+                    price: 50,
+                    image: "/FrontDaLoja/img/download.jpeg"
+                },
+                "cama": {
+                    name: "Cama",
+                    price: 1100,
+                    image: "/FrontDaLoja/img/images.jpeg"
+                },
+                "sala": {
+                    name: "Sala de Estar",
+                    price: 150,
+                    image: "/FrontDaLoja/img/mesa-de-jantar-laca-branca-brilhante-quadrada-sala-moderna.jpg"
+                }
+            };
+
+            const productInfo = productDetails[product];
+            if (!productInfo) return;
+
+            // Recuperar itens existentes do carrinho
+            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+            // Verificar se o produto já está no carrinho
+            const existingItem = cart.find(item => item.name === productInfo.name);
+            if (existingItem) {
+                existingItem.quantity++; // Incrementar a quantidade
+            } else {
+                // Adicionar o novo produto ao carrinho
+                cart.push({
+                    name: productInfo.name,
+                    price: productInfo.price,
+                    image: productInfo.image,
+                    quantity: 1
+                });
+            }
+
+            // Salvar no localStorage
+            localStorage.setItem("cart", JSON.stringify(cart));
+
+            // Exibir a mensagem de sucesso
+            const successMessage = document.getElementById("success-message");
+            successMessage.classList.remove("hidden"); // Exibe a mensagem
+            successMessage.innerText = `${productInfo.name} foi adicionado ao carrinho!`;
+
+            // Após 2 segundos, redirecionar para o carrinho
+            setTimeout(() => {
+                window.location.href = "cart.html";  // Redireciona para o carrinho
+            }, 2000); // 2 segundos
+        }
+
+        window.onload = setProductDetails;
+    </script>
+</body>
+</html>
