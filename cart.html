@@ -35,12 +35,11 @@
                     <a href="checkout.html" class="bg-[#29104A] text-white px-6 py-3 rounded-md hover:bg-[#3f2265]">Finalizar Compra</a>
                 </div>
             </div>
-            
         </div>
     </main>
 
     <script>
-       window.onload = function() {
+      window.onload = function() {
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
     const cartItemsContainer = document.getElementById("cart-items");
     const totalContainer = document.getElementById("cart-total");
@@ -84,23 +83,41 @@ function updateQuantity(index) {
         return; // Impede que a quantidade seja menor que 1
     }
 
-    cart[index].quantity = newQuantity;
+    const item = cart[index];
+    item.quantity = newQuantity;
+
+    // Atualizar localStorage
     localStorage.setItem("cart", JSON.stringify(cart));
 
-    // Atualiza o carrinho
+    // Recarregar a página para refletir as mudanças
     window.onload();
 }
 
 // Função para remover um item do carrinho
 function removeFromCart(index) {
     const cart = JSON.parse(localStorage.getItem("cart"));
-    cart.splice(index, 1); // Remove o item selecionado
+    const productid = cart[index].productid; // Obtém o productid do item no carrinho
+    console.log("ID do produto para remoção:", productid); // Log para depuração
 
-    localStorage.setItem("cart", JSON.stringify(cart));
-
-    // Atualiza o carrinho
-    window.onload();
+    fetch(`http://localhost:8080/carrinho/${productid}`, { // URL correta com o productid
+        method: 'DELETE',
+    })
+    .then(response => {
+        if (response.ok) {
+            alert('Item removido com sucesso');
+            cart.splice(index, 1); // Remove o item da lista local
+            localStorage.setItem("cart", JSON.stringify(cart)); // Atualiza o localStorage
+            window.onload(); // Recarrega a página para refletir as mudanças
+        } else {
+            alert('Erro ao tentar remover o item');
+        }
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+        alert('Erro na requisição');
+    });
 }
+
 
     </script>
 </body>

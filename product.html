@@ -63,19 +63,19 @@
                     name: "Cadeira",
                     price: 50,
                     description: "Elegant and comfortable furniture for your living space.",
-                    imagem: "download.jpeg"
+                    imagem: "images/download.jpeg"
                 },
                 "cama": {
                     name: "Cama",
                     price: 1100,
                     description: "Peaceful and stylish bedroom furniture.",
-                    imagem: "cama.webp"
+                    imagem: "images/cama.webp"
                 },
                 "sala": {
                     name: "Sala de Estar",
                     price: 150,
                     description: "Beautiful dining sets for memorable meals.",
-                    imagem: "mesa-de-jantar-laca-branca-brilhante-quadrada-sala-moderna.jpg"
+                    imagem: "images/mesa-de-jantar-laca-branca-brilhante-quadrada-sala-moderna.jpg"
                 }
             };
 
@@ -91,67 +91,75 @@
             }
         }
 
-        async function addToCart(event) {
-    event.preventDefault();
-
-    const product = getProductFromURL();
-    const quantity = parseInt(document.getElementById("quantity").value);
-    
-    // Garantir que a quantidade seja maior que 0
-    if (quantity < 1) {
-        alert("A quantidade deve ser maior que 0.");
-        return;
-    }
-
-    const productDetails = {
-        "cadeira": {
-            name: "Cadeira",
-            price: 50,
-            imagem: "download.jpeg",
-            quantity: quantity
-        },
-        "cama": {
-            name: "Cama",
-            price: 1100,
-            imagem: "cama.webp",
-            quantity: quantity
-        },
-        "sala": {
-            name: "Sala de Estar",
-            price: 150,
-            imagem: "mesa-de-jantar-laca-branca-brilhante-quadrada-sala-moderna.jpg",
-            quantity: quantity
+        // Função para gerar um ID aleatório para o produto
+        function generateRandomId() {
+            return Math.floor(Math.random() * 100000);
         }
-    };
 
-    const productInfo = productDetails[product];
-    if (!productInfo) {
-        alert("Erro: Produto inválido!");
-        return;
-    }
+        async function addToCart(event) {
+            event.preventDefault();
 
-    // Adicionar ao carrinho no localStorage
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const existingProductIndex = cart.findIndex(item => item.name === productInfo.name);
+            const product = getProductFromURL();
+            const quantity = parseInt(document.getElementById("quantity").value);
 
-    if (existingProductIndex >= 0) {
-        // Produto já existe no carrinho, atualize a quantidade
-        cart[existingProductIndex].quantity += quantity;
-    } else {
-        // Produto não existe no carrinho, adicione como novo
-        cart.push(productInfo);
-    }
+            // Garantir que a quantidade seja maior que 0
+            if (quantity < 1) {
+                alert("A quantidade deve ser maior que 0.");
+                return;
+            }
 
-    // Salvar o carrinho atualizado
-    localStorage.setItem("cart", JSON.stringify(cart));
+            const productDetails = {
+                "cadeira": {
+                    name: "Cadeira",
+                    price: 50,
+                    imagem: "images/download.jpeg",
+                    quantity: quantity,
+                    productid: generateRandomId() // Gerar ID aleatório
+                },
+                "cama": {
+                    name: "Cama",
+                    price: 1100,
+                    imagem: "images/cama.webp",
+                    quantity: quantity,
+                    productid: generateRandomId() // Gerar ID aleatório
+                },
+                "sala": {
+                    name: "Sala de Estar",
+                    price: 150,
+                    imagem: "images/mesa-de-jantar-laca-branca-brilhante-quadrada-sala-moderna.jpg",
+                    quantity: quantity,
+                    productid: generateRandomId() // Gerar ID aleatório
+                }
+            };
 
-    document.getElementById("success-message").classList.remove("hidden");
-    document.getElementById("success-message").innerText = `${productInfo.name} foi adicionado ao carrinho!`;
+            const productInfo = productDetails[product];
+            if (!productInfo) {
+                alert("Erro: Produto inválido!");
+                return;
+            }
 
-    // Redirecionar após 2 segundos
-    setTimeout(() => {
-        window.location.href = "cart.html";  // Ajuste o caminho conforme necessário
-    }, 2000);
+            // Adicionar ao carrinho no localStorage
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            const existingProductIndex = cart.findIndex(item => item.name === productInfo.name);
+
+            if (existingProductIndex >= 0) {
+                // Produto já existe no carrinho, atualize a quantidade
+                cart[existingProductIndex].quantity += quantity;
+            } else {
+                // Produto não existe no carrinho, adicione como novo
+                cart.push(productInfo);
+            }
+
+            // Salvar o carrinho atualizado
+            localStorage.setItem("cart", JSON.stringify(cart));
+
+            document.getElementById("success-message").classList.remove("hidden");
+            document.getElementById("success-message").innerText = `${productInfo.name} foi adicionado ao carrinho!`;
+
+            // Redirecionar após 2 segundos
+            setTimeout(() => {
+                window.location.href = "cart.html";  // Ajuste o caminho conforme necessário
+            }, 2000);
 
             try {
                 const response = await fetch('http://localhost:8080/carrinho', {
