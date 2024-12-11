@@ -40,67 +40,68 @@
     </main>
 
     <script>
-        window.onload = function() {
-            const cart = JSON.parse(localStorage.getItem("cart")) || [];
-            const cartItemsContainer = document.getElementById("cart-items");
-            const totalContainer = document.getElementById("cart-total");
-            let total = 0;
+       window.onload = function() {
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const cartItemsContainer = document.getElementById("cart-items");
+    const totalContainer = document.getElementById("cart-total");
+    let total = 0;
 
-            cartItemsContainer.innerHTML = ""; // Limpar antes de adicionar os itens
+    cartItemsContainer.innerHTML = ""; // Limpar antes de adicionar os itens
 
-            if (cart.length === 0) {
-                cartItemsContainer.innerHTML = "<p class='text-gray-500'>Seu carrinho está vazio.</p>";
-            } else {
-                cart.forEach((item, index) => {
-                    total += item.price * item.quantity;
+    if (cart.length === 0) {
+        cartItemsContainer.innerHTML = "<p class='text-gray-500'>Seu carrinho está vazio.</p>";
+    } else {
+        cart.forEach((item, index) => {
+            total += item.price * item.quantity;
 
-                    const itemHTML = `
-                        <div class="flex items-center space-x-4 mb-4">
-                            <img src="${item.image}" alt="${item.name}" class="w-20 h-20 object-cover rounded-md">
-                            <div class="flex-1">
-                                <h3 class="font-semibold text-[#A020F0]">${item.name}</h3>
-                                <p class="text-gray-600">Preço: ${item.price} R$</p>
-                                <div class="flex items-center space-x-2">
-                                    <input type="number" value="${item.quantity}" min="1" id="quantity-${index}" class="w-16 p-2 border border-gray-300 rounded-md" onchange="updateQuantity(${index})">
-                                    <span class="text-gray-600">Quantidade</span>
-                                    <button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700">Excluir</button>
-                                </div>
-                            </div>
+            const itemHTML = `
+                <div class="flex items-center space-x-4 mb-4">
+                    <img src="${item.imagem}" alt="${item.name}" class="w-20 h-20 object-cover rounded-md">
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-[#A020F0]">${item.name}</h3>
+                        <p class="text-gray-600">Preço: ${item.price} R$</p>
+                        <div class="flex items-center space-x-2">
+                            <input type="number" value="${item.quantity}" min="1" id="quantity-${index}" class="w-16 p-2 border border-gray-300 rounded-md" onchange="updateQuantity(${index})">
+                            <span class="text-gray-600">Quantidade</span>
+                            <button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700">Excluir</button>
                         </div>
-                    `;
-                    cartItemsContainer.innerHTML += itemHTML;
-                });
+                    </div>
+                </div>
+            `;
+            cartItemsContainer.innerHTML += itemHTML;
+        });
 
-                totalContainer.querySelector("span").innerText = `Total: ${total} R$`;
-            }
-        };
+        totalContainer.querySelector("span").innerText = `Total: ${total} R$`;
+    }
+};
 
-        // Função para atualizar a quantidade no carrinho
-        function updateQuantity(index) {
-            const cart = JSON.parse(localStorage.getItem("cart"));
-            const newQuantity = document.getElementById(`quantity-${index}`).value;
+// Função para atualizar a quantidade no carrinho
+function updateQuantity(index) {
+    const cart = JSON.parse(localStorage.getItem("cart"));
+    const newQuantity = parseInt(document.getElementById(`quantity-${index}`).value);
 
-            if (newQuantity < 1) {
-                return; // Impede que a quantidade seja menor que 1
-            }
+    if (newQuantity < 1) {
+        return; // Impede que a quantidade seja menor que 1
+    }
 
-            cart[index].quantity = parseInt(newQuantity);
-            localStorage.setItem("cart", JSON.stringify(cart));
+    cart[index].quantity = newQuantity;
+    localStorage.setItem("cart", JSON.stringify(cart));
 
-            // Atualiza o carrinho
-            window.onload();
-        }
+    // Atualiza o carrinho
+    window.onload();
+}
 
-        // Função para remover um item do carrinho
-        function removeFromCart(index) {
-            const cart = JSON.parse(localStorage.getItem("cart"));
-            cart.splice(index, 1); // Remove o item selecionado
+// Função para remover um item do carrinho
+function removeFromCart(index) {
+    const cart = JSON.parse(localStorage.getItem("cart"));
+    cart.splice(index, 1); // Remove o item selecionado
 
-            localStorage.setItem("cart", JSON.stringify(cart));
+    localStorage.setItem("cart", JSON.stringify(cart));
 
-            // Atualiza o carrinho
-            window.onload();
-        }
+    // Atualiza o carrinho
+    window.onload();
+}
+
     </script>
 </body>
 </html>
