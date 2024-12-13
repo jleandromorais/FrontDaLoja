@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carrinho - Ferreira de Frontal</title>
     <script src="https://cdn.tailwindcss.com"></script>
+ 
+
 </head>
+
 <body class="bg-[#A020F0]">
     <nav class="bg-white shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -37,88 +41,8 @@
             </div>
         </div>
     </main>
-
-    <script>
-      window.onload = function() {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const cartItemsContainer = document.getElementById("cart-items");
-    const totalContainer = document.getElementById("cart-total");
-    let total = 0;
-
-    cartItemsContainer.innerHTML = ""; // Limpar antes de adicionar os itens
-
-    if (cart.length === 0) {
-        cartItemsContainer.innerHTML = "<p class='text-gray-500'>Seu carrinho está vazio.</p>";
-    } else {
-        cart.forEach((item, index) => {
-            total += item.price * item.quantity;
-
-            const itemHTML = `
-                <div class="flex items-center space-x-4 mb-4">
-                    <img src="${item.imagem}" alt="${item.name}" class="w-20 h-20 object-cover rounded-md">
-                    <div class="flex-1">
-                        <h3 class="font-semibold text-[#A020F0]">${item.name}</h3>
-                        <p class="text-gray-600">Preço: ${item.price} R$</p>
-                        <div class="flex items-center space-x-2">
-                            <input type="number" value="${item.quantity}" min="1" id="quantity-${index}" class="w-16 p-2 border border-gray-300 rounded-md" onchange="updateQuantity(${index})">
-                            <span class="text-gray-600">Quantidade</span>
-                            <button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700">Excluir</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            cartItemsContainer.innerHTML += itemHTML;
-        });
-
-        totalContainer.querySelector("span").innerText = `Total: ${total} R$`;
-    }
-};
-
-// Função para atualizar a quantidade no carrinho
-function updateQuantity(index) {
-    const cart = JSON.parse(localStorage.getItem("cart"));
-    const newQuantity = parseInt(document.getElementById(`quantity-${index}`).value);
-
-    if (newQuantity < 1) {
-        return; // Impede que a quantidade seja menor que 1
-    }
-
-    const item = cart[index];
-    item.quantity = newQuantity;
-
-    // Atualizar localStorage
-    localStorage.setItem("cart", JSON.stringify(cart));
-
-    // Recarregar a página para refletir as mudanças
-    window.onload();
-}
-
-// Função para remover um item do carrinho
-function removeFromCart(index) {
-    const cart = JSON.parse(localStorage.getItem("cart"));
-    const productid = cart[index].productid; // Obtém o productid do item no carrinho
-    console.log("ID do produto para remoção:", productid); // Log para depuração
-
-    fetch(`http://localhost:8080/carrinho/${productid}`, { // URL correta com o productid
-        method: 'DELETE',
-    })
-    .then(response => {
-        if (response.ok) {
-            alert('Item removido com sucesso');
-            cart.splice(index, 1); // Remove o item da lista local
-            localStorage.setItem("cart", JSON.stringify(cart)); // Atualiza o localStorage
-            window.onload(); // Recarrega a página para refletir as mudanças
-        } else {
-            alert('Erro ao tentar remover o item');
-        }
-    })
-    .catch(error => {
-        console.error('Erro:', error);
-        alert('Erro na requisição');
-    });
-}
-
-
-    </script>
+    <script src="jsdocart.js"></script>
+   
 </body>
+
 </html>

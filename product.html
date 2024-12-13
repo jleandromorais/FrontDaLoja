@@ -63,19 +63,22 @@
                     name: "Cadeira",
                     price: 50,
                     description: "Elegant and comfortable furniture for your living space.",
-                    imagem: "images/download.jpeg"
+                    imagem: "images/download.jpeg",
+                    id:10
                 },
                 "cama": {
                     name: "Cama",
                     price: 1100,
                     description: "Peaceful and stylish bedroom furniture.",
-                    imagem: "images/cama.webp"
+                    imagem: "images/cama.webp",
+                    id:20
                 },
                 "sala": {
                     name: "Sala de Estar",
                     price: 150,
                     description: "Beautiful dining sets for memorable meals.",
-                    imagem: "images/mesa-de-jantar-laca-branca-brilhante-quadrada-sala-moderna.jpg"
+                    imagem: "images/mesa-de-jantar-laca-branca-brilhante-quadrada-sala-moderna.jpg",
+                    id:30
                 }
             };
 
@@ -91,11 +94,7 @@
             }
         }
 
-        // Função para gerar um ID aleatório para o produto
-        function generateRandomId() {
-            return Math.floor(Math.random() * 100000);
-        }
-
+       
         async function addToCart(event) {
             event.preventDefault();
 
@@ -114,21 +113,21 @@
                     price: 50,
                     imagem: "images/download.jpeg",
                     quantity: quantity,
-                    productid: generateRandomId() // Gerar ID aleatório
+                    id: 10 // Gerar ID aleatório
                 },
                 "cama": {
                     name: "Cama",
                     price: 1100,
                     imagem: "images/cama.webp",
                     quantity: quantity,
-                    productid: generateRandomId() // Gerar ID aleatório
+                    id: 20// Gerar ID aleatório
                 },
                 "sala": {
                     name: "Sala de Estar",
                     price: 150,
                     imagem: "images/mesa-de-jantar-laca-branca-brilhante-quadrada-sala-moderna.jpg",
                     quantity: quantity,
-                    productid: generateRandomId() // Gerar ID aleatório
+                    id: 30 // Gerar ID aleatório
                 }
             };
 
