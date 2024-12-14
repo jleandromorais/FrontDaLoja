@@ -19,7 +19,9 @@ window.onload = function () {
                         <h3 class="font-semibold text-[#A020F0]">${item.name}</h3>
                         <p class="text-gray-600">Preço: ${item.price} R$</p>
                         <div class="flex items-center space-x-2">
-                            <input type="number" value="${item.quantity}" min="1" id="quantity-${index}" class="w-16 p-2 border border-gray-300 rounded-md" onchange="updateQuantity(${index})">
+                            <input type="number" value="${item.quantity}" min="1" id="quantity-${index}" 
+                                   class="w-24 p-2 border border-gray-300 rounded-md bg-white text-black" 
+                                   onchange="updateQuantity(${index})">
                             <span class="text-gray-600">Quantidade</span>
                             <button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700">Excluir</button>
                         </div>
