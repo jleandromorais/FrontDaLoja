@@ -65,7 +65,7 @@ btnSalvar.addEventListener('click', async (e) => {
       });
     } else {
       // Criar novo item
-      response = await fetch('http://localhost:8080/trabalho', {
+      response = await fetch('http://localhost:8080/trabalho/trabalhadores ', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

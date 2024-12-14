@@ -1,17 +1,30 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalhes do Produto - Ferreira de Frontal</title>
+    <title>Detalhes do Produto - Magazine Costa</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(to right, #A020F0, #4169E1); /* Gradiente purple and blue */
+            color: white;
+        }
+        input[type="number"] {
+            background-color: white; /* Fundo claro para contraste */
+            color: black; /* Texto escuro para legibilidade */
+        }
+    </style>
 </head>
-<body class="bg-[#A020F0]">
+<body>
     <nav class="bg-white shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex-shrink-0 flex items-center">
-                    <h1 class="text-2xl font-bold text-[#A020F0]">Ferreira de Frontal</h1>
+                    <h1 class="text-3xl font-extrabold bg-gradient-to-r from-[#A020F0] to-[#4169E1] text-transparent bg-clip-text">
+                        Magazine costa
+                    </h1>
                 </div>
                 <div class="flex items-center space-x-4">
                     <a href="cart.html" class="text-[#A020F0] hover:text-purple-700">Carrinho</a>
@@ -49,147 +62,11 @@
             </div>
         </section>
     </main>
+</body>
+</html>
 
-    <script>
-        function getProductFromURL() {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('product');
-        }
 
-        function setProductDetails() {
-            const product = getProductFromURL();
-            const productDetails = {
-                "cadeira": {
-                    name: "Cadeira",
-                    price: 50,
-                    description: "Elegant and comfortable furniture for your living space.",
-                    imagem: "images/download.jpeg",
-                    id:10
-                },
-                "cama": {
-                    name: "Cama",
-                    price: 1100,
-                    description: "Peaceful and stylish bedroom furniture.",
-                    imagem: "images/cama.webp",
-                    id:20
-                },
-                "sala": {
-                    name: "Sala de Estar",
-                    price: 150,
-                    description: "Beautiful dining sets for memorable meals.",
-                    imagem: "images/mesa-de-jantar-laca-branca-brilhante-quadrada-sala-moderna.jpg",
-                    id:30
-                }
-            };
 
-            const productInfo = productDetails[product];
-
-            if (productInfo) {
-                document.getElementById("product-name").innerText = productInfo.name;
-                document.getElementById("product-price").innerText = "Preço: " + productInfo.price + " R$";
-                document.getElementById("product-description").innerText = productInfo.description;
-                document.getElementById("product-image").src = productInfo.imagem;
-            } else {
-                console.error("Produto não encontrado!");
-            }
-        }
-
-       
-        async function addToCart(event) {
-            event.preventDefault();
-
-            const product = getProductFromURL();
-            const quantity = parseInt(document.getElementById("quantity").value);
-
-            // Garantir que a quantidade seja maior que 0
-            if (quantity < 1) {
-                alert("A quantidade deve ser maior que 0.");
-                return;
-            }
-
-            const productDetails = {
-                "cadeira": {
-                    name: "Cadeira",
-                    price: 50,
-                    imagem: "images/download.jpeg",
-                    quantity: quantity,
-                    id: 10 // Gerar ID aleatório
-                },
-                "cama": {
-                    name: "Cama",
-                    price: 1100,
-                    imagem: "images/cama.webp",
-                    quantity: quantity,
-                    id: 20// Gerar ID aleatório
-                },
-                "sala": {
-                    name: "Sala de Estar",
-                    price: 150,
-                    imagem: "images/mesa-de-jantar-laca-branca-brilhante-quadrada-sala-moderna.jpg",
-                    quantity: quantity,
-                    id: 30 // Gerar ID aleatório
-                }
-            };
-
-            const productInfo = productDetails[product];
-            if (!productInfo) {
-                alert("Erro: Produto inválido!");
-                return;
-            }
-
-            // Adicionar ao carrinho no localStorage
-            let cart = JSON.parse(localStorage.getItem("cart")) || [];
-            const existingProductIndex = cart.findIndex(item => item.name === productInfo.name);
-
-            if (existingProductIndex >= 0) {
-                // Produto já existe no carrinho, atualize a quantidade
-                cart[existingProductIndex].quantity += quantity;
-            } else {
-                // Produto não existe no carrinho, adicione como novo
-                cart.push(productInfo);
-            }
-
-            // Salvar o carrinho atualizado
-            localStorage.setItem("cart", JSON.stringify(cart));
-
-            document.getElementById("success-message").classList.remove("hidden");
-            document.getElementById("success-message").innerText = `${productInfo.name} foi adicionado ao carrinho!`;
-
-            // Redirecionar após 2 segundos
-            setTimeout(() => {
-                window.location.href = "cart.html";  // Ajuste o caminho conforme necessário
-            }, 2000);
-
-            try {
-                const response = await fetch('http://localhost:8080/carrinho', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(productInfo),
-                });
-
-                if (response.ok) {
-                    console.log("Produto adicionado com sucesso, redirecionando para o carrinho...");
-                    document.getElementById("success-message").classList.remove("hidden");
-                    document.getElementById("success-message").innerText = `${productInfo.name} foi adicionado ao carrinho!`;
-
-                    // Redirecionar após 2 segundos
-                    setTimeout(() => {
-                        window.location.href = "cart.html";  // Ajuste o caminho conforme necessário
-                    }, 2000);
-                } else {
-                    const errorMessage = await response.text();
-                    console.error("Erro ao adicionar ao carrinho:", errorMessage);
-                    alert("Erro ao adicionar ao carrinho. Por favor, tente novamente.");
-                }
-            } catch (error) {
-                console.error("Erro ao tentar se conectar ao servidor:", error);
-                alert("Erro com o servidor. Verifique a conexão.");
-            }
-        }
-
-        window.onload = setProductDetails;
-    </script>
+       <script src="product.js"></script>
 </body>
 </html>

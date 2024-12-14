@@ -33,7 +33,7 @@ window.onload = function () {
     }
 };
 
-// Função para atualizar a quantidade no carrinho
+
 function updateQuantity(index) {
     const cart = JSON.parse(localStorage.getItem("cart"));
     const newQuantity = parseInt(document.getElementById(`quantity-${index}`).value);
@@ -80,6 +80,27 @@ async function removeFromCart(index) {
         alert('Erro ao excluir item. Verifique a conexão com o servidor.');
     }
 }
+// Função para exibir mensagem de sucesso
+document.getElementById('finalizar-compra').addEventListener('click', function (event) {
+    event.preventDefault(); // Impede a navegação para a página de checkout
+
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    let total = 0;
+
+    // Calculando o total da compra
+    cart.forEach(item => {
+        total += item.price * item.quantity;
+    });
+
+    // Exibindo a mensagem de sucesso
+    alert(`Sua compra foi realizada com sucesso! No valor de ${total} R$`);
+
+    // Opcional: após a exibição da mensagem, você pode limpar o carrinho
+    localStorage.removeItem("cart");
+
+    // Redirecionar para uma página de confirmação de compra ou para a home
+    window.location.href = "index.html"; // Exemplo de redirecionamento
+});
 
 // Inicializa a página com os itens ao carregar
 document.addEventListener('DOMContentLoaded', window.onload);
