@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Produto - Magazine Costa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(to right, #A020F0, #4169E1); /* Gradiente purple and blue */
+            color: white;
+        }
+        input[type="number"] {
+            background-color: white; /* Fundo claro para contraste */
+            color: black; /* Texto escuro para legibilidade */
+        }
+    </style>
+</head>
+<body>
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex-shrink-0 flex items-center">
+                    <h1 class="text-3xl font-extrabold bg-gradient-to-r from-[#A020F0] to-[#4169E1] text-transparent bg-clip-text">
+                        Magazine costa
+                    </h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="cart.html" class="text-[#A020F0] hover:text-purple-700">Carrinho</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <section class="bg-white rounded-lg shadow-md p-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <img id="product-image" alt="Imagem do Produto" class="w-full h-auto rounded-lg">
+                </div>
+                <div>
+                    <h2 id="product-name" class="text-3xl font-bold text-[#A020F0] mb-4"></h2>
+                    <p id="product-description" class="text-gray-600 mb-4"></p>
+                    <p id="product-price" class="text-lg font-semibold text-[#A020F0]">Preço: </p>
+                    
+                    <!-- Campo de Quantidade -->
+                    <label for="quantity" class="block text-sm text-gray-700 mt-4">Quantidade:</label>
+                    <input type="number" id="quantity" class="mt-2 p-2 border border-gray-300 rounded-md w-24" value="1" min="1">
+
+                    <div style="margin-top: 100px; text-align: left;">
+                        <a href="#" 
+                           class="bg-[#29104A] text-white px-6 py-3 rounded-md text-center font-semibold transition-all transform hover:bg-[#3f2265] hover:scale-105" 
+                           onclick="addToCart(event)">
+                           Adicionar ao Carrinho
+                        </a>
+                    </div>
+                    <div id="success-message" class="hidden mt-4 text-green-500 font-semibold">
+                        Produto adicionado ao carrinho!
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
+
+
+
+       <script src="product.js"></script>
+</body>
+</html>
