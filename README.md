@@ -39,6 +39,24 @@
 
 ---
 
+## 🖼️ Imagens do Projeto
+
+### 🏠 Página Inicial (Catálogo de Produtos)
+![Página Inicial](img/home.png)
+
+### 📄 Detalhes do Produto
+![Detalhes do Produto](img/detalhes-produto.png)
+
+### 🛒 Carrinho de Compras
+![Carrinho de Compras](img/carrinho.png)
+
+### 🔐 Login de Administrador
+![Login Admin](img/admin-login.png)
+
+### 👥 Cadastro de Funcionários
+![Cadastro de Funcionários](img/cadastro-funcionarios.png)
+
+ 
 ## 📁 Estrutura do Projeto
 
 | Arquivo / Pasta        | Função                                                                 |
