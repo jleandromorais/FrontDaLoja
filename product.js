@@ -1,130 +1,143 @@
+document.addEventListener('DOMContentLoaded', () => {
+  setProductDetails();
+  renderCart();
+});
+
+// Obtem produto da URL
 function getProductFromURL() {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('product');
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get('product');
 }
 
+// Seta os detalhes do produto
 function setProductDetails() {
-    const product = getProductFromURL();
-    const productDetails = {
-        "cadeira": {
-            name: "Cadeira",
-            price: 50,
-            description: "Elegant and comfortable furniture for your living space.",
-            imagem: "images/download.jpeg",
-            id: 10
-        },
-        "cama": {
-            name: "Cama",
-            price: 1100,
-            description: "Peaceful and stylish bedroom furniture.",
-            imagem: "images/cama.webp",
-            id: 20
-        },
-        "sala": {
-            name: "Sala de Estar",
-            price: 150,
-            description: "Beautiful dining sets for memorable meals.",
-            imagem: "images/mesa-de-jantar-laca-branca-brilhante-quadrada-sala-moderna.jpg",
-            id: 30
-        }
-    };
+  const productKey = getProductFromURL();
+  const product = productMap[productKey];
 
-    const productInfo = productDetails[product];
-
-    if (productInfo) {
-        document.getElementById("product-name").innerText = productInfo.name;
-        document.getElementById("product-price").innerText = "Preço: " + productInfo.price + " R$";
-        document.getElementById("product-description").innerText = productInfo.description;
-        document.getElementById("product-image").src = productInfo.imagem;
-    } else {
-        console.error("Produto não encontrado!");
-    }
+  if (product) {
+    document.getElementById("product-name").innerText = product.name;
+    document.getElementById("product-price").innerText = `Preço: ${product.price} R$`;
+    document.getElementById("product-description").innerText = product.description;
+    document.getElementById("product-image").src = product.imagem;
+  }
 }
 
+// Mapeamento dos produtos
+const productMap = {
+  "cadeira": { name: "Cadeira", price: 50, description: "Cadeira top", imagem: "images/download.jpeg" },
+  "cama": { name: "Cama", price: 1100, description: "Dormir com estilo", imagem: "images/cama.webp" },
+  "sala": { name: "Sala de Estar", price: 150, description: "Janta bonita", imagem: "images/mesa-de-jantar-laca-branca-brilhante-quadrada-sala-moderna.jpg" },
+};
+
+// Adiciona produto ao carrinho
 async function addToCart(event) {
-    event.preventDefault();
+  event.preventDefault();
 
-    const product = getProductFromURL();
-    const quantity = parseInt(document.getElementById("quantity").value);
+  const quantity = parseInt(document.getElementById("quantity").value);
+  if (quantity < 1) return alert("Quantidade inválida.");
 
-    // Garantir que a quantidade seja maior que 0
-    if (quantity < 1) {
-        alert("A quantidade deve ser maior que 0.");
-        return;
-    }
+  const productKey = getProductFromURL();
+  const product = productMap[productKey];
+  if (!product) return alert("Produto inválido.");
 
-    const productDetails = {
-        "cadeira": {
-            name: "Cadeira",
-            price: 50,
-            imagem: "images/download.jpeg",
-            quantity: quantity,
-            id: 10 // Gerar ID aleatório
-        },
-        "cama": {
-            name: "Cama",
-            price: 1100,
-            imagem: "images/cama.webp",
-            quantity: quantity,
-            id: 20 // Gerar ID aleatório
-        },
-        "sala": {
-            name: "Sala de Estar",
-            price: 150,
-            imagem: "images/mesa-de-jantar-laca-branca-brilhante-quadrada-sala-moderna.jpg",
-            quantity: quantity,
-            id: 30 // Gerar ID aleatório
-        }
-    };
+  const item = { ...product, quantity };
 
-    const productInfo = productDetails[product];
-    if (!productInfo) {
-        alert("Erro: Produto inválido!");
-        return;
-    }
+  // Atualiza localStorage
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const existing = cart.find(p => p.name === item.name);
+  if (existing) {
+    existing.quantity += quantity;
+  } else {
+    cart.push(item);
+  }
+  localStorage.setItem("cart", JSON.stringify(cart));
 
-    // Adicionar ao carrinho no localStorage
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const existingProductIndex = cart.findIndex(item => item.name === productInfo.name);
+  // Envia pro backend
+  try {
+    const response = await fetch("http://localhost:8080/carrinho", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(item),
+    });
 
-    if (existingProductIndex >= 0) {
-        // Produto já existe no carrinho, atualize a quantidade
-        cart[existingProductIndex].quantity += quantity;
+    if (response.ok) {
+      document.getElementById("success-message").classList.remove("hidden");
+      document.getElementById("success-message").innerText = `${item.name} foi adicionado ao carrinho!`;
+      setTimeout(() => window.location.href = "cart.html", 2000);
     } else {
-        // Produto não existe no carrinho, adicione como novo
-        cart.push(productInfo);
+      const errorText = await response.text();
+      console.error("Erro ao adicionar:", errorText);
+      alert("Erro ao adicionar ao carrinho.");
     }
-
-    // Salvar o carrinho atualizado no localStorage
-    localStorage.setItem("cart", JSON.stringify(cart));
-
-    // Agora, enviar o produto para o backend usando fetch
-    try {
-        const response = await fetch('http://localhost:8080/carrinho', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(productInfo),
-        });
-
-        if (response.ok) {
-            document.getElementById("success-message").classList.remove("hidden");
-            document.getElementById("success-message").innerText = `${productInfo.name} foi adicionado ao carrinho!`;
-
-            // Redirecionar após 2 segundos
-            setTimeout(() => {
-                window.location.href = "cart.html";  // Ajuste o caminho conforme necessário
-            }, 2000);
-        } else {
-            const errorMessage = await response.text();
-            console.error("Erro ao adicionar ao carrinho:", errorMessage);
-            alert("Erro ao adicionar ao carrinho. Por favor, tente novamente.");
-        }
-    } catch (error) {
-        console.error("Erro ao tentar se conectar ao servidor:", error);
-        alert("Erro com o servidor. Verifique a conexão.");
-    }
+  } catch (err) {
+    console.error("Erro de conexão:", err);
+    alert("Erro com o servidor.");
+  }
 }
 
-window.onload = setProductDetails;
+// Renderiza o carrinho
+function renderCart() {
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const container = document.getElementById("cart-items");
+  const totalSpan = document.getElementById("cart-total").querySelector("span");
+  container.innerHTML = "";
+  let total = 0;
+
+  if (cart.length === 0) {
+    container.innerHTML = "<p class='text-gray-500'>Seu carrinho está vazio.</p>";
+    totalSpan.innerText = "Total: 0 R$";
+    return;
+  }
+
+  cart.forEach((item, index) => {
+    total += item.price * item.quantity;
+    container.innerHTML += `
+      <div class="flex items-center space-x-4 mb-4">
+        <img src="${item.imagem}" alt="${item.name}" class="w-20 h-20 rounded-md">
+        <div class="flex-1">
+          <h3 class="font-semibold">${item.name}</h3>
+          <p>Preço: ${item.price} R$</p>
+          <div class="flex items-center space-x-2">
+            <input type="number" value="${item.quantity}" min="1" onchange="updateQuantity(${index}, this.value)">
+            <button onclick="removeFromCart(${index})" class="text-red-500">Excluir</button>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  totalSpan.innerText = `Total: ${total} R$`;
+}
+
+function updateQuantity(index, newQuantity) {
+  const cart = JSON.parse(localStorage.getItem("cart"));
+  if (newQuantity < 1) return;
+  cart[index].quantity = parseInt(newQuantity);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  renderCart();
+}
+
+async function removeFromCart(index) {
+  const cart = JSON.parse(localStorage.getItem("cart"));
+  const item = cart[index];
+
+  try {
+    const response = await fetch(`http://localhost:8080/carrinho/${item.id}`, { method: 'DELETE' });
+    if (!response.ok) throw new Error("Falha ao excluir item no servidor");
+    cart.splice(index, 1);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    renderCart();
+  } catch (err) {
+    console.error("Erro:", err);
+    alert("Erro ao remover item.");
+  }
+}
+
+// Finaliza a compra
+document.getElementById('finalizar-compra').addEventListener('click', () => {
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  alert(`Sua compra foi realizada com sucesso! Total: ${total} R$`);
+  localStorage.removeItem("cart");
+  window.location.href = "index.html";
+});
